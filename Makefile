@@ -10,12 +10,12 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME1 = client
-NAME2 = server
+NAME1 = server
+NAME2 = client
 LIBFT = libft/libft.a
 CC = cc -Wall -Wextra -Werror
-SRC1 =
-SRC2 =
+SRC1 = server.c
+SRC2 = client.c
 OBJ1 = $(SRC1:.c=.o)
 OBJ2 = $(SRC2:.c=.o)
 
@@ -23,11 +23,11 @@ all : $(NAME1) $(NAME2)
 
 $(NAME1) : $(LIBFT) $(OBJ1)
 	@$(CC) $(OBJ1) $(LIBFT) -o $(NAME1)
-	@echo "Client made."
+	@echo "Server made."
 
 $(NAME2) : $(LIBFT) $(OBJ2)
 	@$(CC) $(OBJ2) $(LIBFT) -o $(NAME2)
-	@echo "Server made."
+	@echo "Client made."
 
 %.o : %.c
 	@$(CC) -c $< -o $@
