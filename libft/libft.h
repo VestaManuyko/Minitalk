@@ -16,6 +16,8 @@
 # include "printf.h"
 # include "get_next_line.h"
 
+# define ATOI_ERROR 4444444444
+
 typedef struct s_list
 {
 	void			*content;
@@ -27,6 +29,7 @@ int		ft_isdigit(int c);
 int		ft_isalnum(int c);
 int		ft_isascii(int c);
 int		ft_isprint(int c);
+long	ft_atoi(const char *nptr);
 size_t	ft_strlen(const char *str);
 void	*ft_memset(void *s, int c, size_t n);
 void	ft_bzero(void *s, size_t n);

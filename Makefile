@@ -36,7 +36,7 @@ $(LIBFT) :
 	@$(MAKE) -C libft --no-print-directory
 
 clean :
-	@rm -f $(OBJ) $(POBJ)
+	@rm -f $(OBJ1) $(OBJ2)
 	@$(MAKE) -C libft --no-print-directory clean
 	@echo "Cleaned."
 

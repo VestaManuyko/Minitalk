@@ -11,13 +11,43 @@
 /* ************************************************************************** */
 #include "libft.h"
 
-int	ft_atoi(const char *nptr)
+static long	atoi_2(const char *nptr, size_t i, int sign)
+{
+	long	number;
+
+	number = 0;
+	if (!nptr[i])
+		return (ATOI_ERROR);
+	while (nptr[i] && ft_isdigit(nptr[i]))
+		number = number * 10 + (nptr[i++] - '0');
+	if ((sign == 1 && number > INT_MAX)
+		|| (sign == -1 && (-number) < INT_MIN))
+		return (ATOI_ERROR);
+	return (sign * number);
+}
+
+static int	nbr_too_long(const char *nptr)
+{
+	int	i;
+
+	i = 0;
+	if (!nptr[i])
+		return (1);
+	while (nptr[i])
+		i++;
+	if (i > 11)
+		return (1);
+	return (0);
+}
+
+long	ft_atoi(const char *nptr)
 {
 	int		sign;
-	int		number;
 	size_t	i;
 
 	i = 0;
+	if (nbr_too_long(nptr))
+		return (ATOI_ERROR);
 	while (nptr[i])
 	{
 		while (nptr[i] && ((nptr[i] >= 9 && nptr[i] <= 13) || nptr[i] == 32))
@@ -29,12 +59,11 @@ int	ft_atoi(const char *nptr)
 				sign *= -1;
 			i++;
 		}
-		number = 0;
-		while (ft_isdigit(nptr[i]))
-			number = number * 10 + (nptr[i++] - '0');
-		return (sign * number);
+		if (nptr[i] == '-' || nptr[i] == '+')
+			break ;
+		return (atoi_2(nptr, i, sign));
 	}
-	return (0);
+	return (ATOI_ERROR);
 }
 /*
 #include <stdio.h>
