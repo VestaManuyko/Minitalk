@@ -33,7 +33,6 @@ static char	*rev_str(char *binary)
 		j--;
 	}
 	rev_str[i] = 0;
-	ft_printf("%s\n", rev_str);
 	return (rev_str);
 }
 
@@ -61,11 +60,10 @@ static void	send_message(char *message, int pid)
 	char	*binary;
 
 	i = 0;
-	j = 0;
 	while (message[i])
 	{
+		j = 0;
 		binary = get_binary(message[i]);
-		ft_printf("binary: %s\n", binary);
 		while (binary[j])
 		{
 			if (binary[j] == '0')
@@ -73,6 +71,7 @@ static void	send_message(char *message, int pid)
 			if (binary[j] == '1')
 				kill(pid, SIGUSR2);
 			j++;
+			usleep(100);
 		}
 		i++;
 		free(binary);
@@ -89,7 +88,6 @@ int	main(int argc, char **argv)
 		exit(1);
 	}
 	pid = ft_atoi(argv[1]);
-	ft_printf("PId: %d\n", (int)pid);
 	if (pid == ATOI_ERROR || (kill((int)pid, 0) == -1))
 	{
 		write(2, "Incorrect PID\n", 14);
