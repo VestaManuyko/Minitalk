@@ -1,36 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server.c                                           :+:      :+:    :+:   */
+/*   server_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vmanuyko <vmanuyko@student.42vienna.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/01 02:02:51 by vmanuyko          #+#    #+#             */
-/*   Updated: 2025/09/01 02:02:53 by vmanuyko         ###   ########.fr       */
+/*   Created: 2025/09/01 17:59:45 by vmanuyko          #+#    #+#             */
+/*   Updated: 2025/09/01 17:59:46 by vmanuyko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minitalk.h"
-
-char	*str = NULL;
+#include "libft/libft.h"
+#include <signal.h>
 
 static void	handler(int signum, siginfo_t *info, void *context)
 {
 	static char	c = 0;
 	static int	bits = 0;
 	static int	sender_pid = 0;
-	char		*temp;
-	char		tmp[2];
 
 	(void)context;
 	if (sender_pid == 0)
+	{
 		sender_pid = info->si_pid;
+		kill(sender_pid, SIGUSR2);
+		return ;
+	}
 	if (info->si_pid != sender_pid)
 		kill(info->si_pid, SIGUSR1);
-	if (!str)
-		str = ft_strdup("");
-	if (!str)
-		exit(1);
 	if (info->si_pid == sender_pid)
 	{
 		c <<= 1;
@@ -38,29 +35,16 @@ static void	handler(int signum, siginfo_t *info, void *context)
 			c |= 1;
 		if (++bits == 8)
 		{
-			temp = str;
-			tmp[0] = c;
-			tmp[1] = '\0';
-			str = ft_strjoin(temp, tmp);
-			free (temp);
-			if (!str)
-			{
-				write(2, "Strjoin failed\n", 15);
-				exit(1);
-			}
+			write(1, &c, 1);
 			if (c == '\0')
-			{
 				sender_pid = 0;
-				write(1, str, ft_strlen(str));
+			if (c == '\0')
 				write(1, "\n", 1);
-				if (str)
-					free (str);
-				str = NULL;
-			}
 			c = 0;
 			bits = 0;
 		}
 	}
+	kill(sender_pid, SIGUSR2);
 }
 
 int	main(void)
@@ -75,8 +59,5 @@ int	main(void)
 	sigaction(SIGUSR2, &sa, NULL);
 	while (1)
 		pause();
-	if (str)
-		free (str);
-	str = NULL;
 	exit (0);
 }
