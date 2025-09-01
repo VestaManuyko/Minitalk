@@ -15,7 +15,7 @@
 static void	handler(int signum)
 {
 	static char	c = 0;
-	static int	bits = 0;;
+	static int	bits = 0;
 
 	c <<= 1;
 	if (signum == SIGUSR2)
@@ -24,6 +24,8 @@ static void	handler(int signum)
 	if (bits == 8)
 	{
 		write(1, &c, 1);
+		if (c == '\0')
+			write(1, "\n", 1);
 		c = 0;
 		bits = 0;
 	}

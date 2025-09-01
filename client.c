@@ -12,70 +12,41 @@
 
 #include "minitalk.h"
 
-static char	*rev_str(char *binary)
-{
-	char	*rev_str;
-	int		i;
-	int		j;
-
-	i = 0;
-	j = 7;
-	rev_str = malloc(sizeof(char) * 9);
-	if (!rev_str)
-	{
-		write(2, "Malloc of rev_str failed\n", 25);
-		exit(1);
-	}
-	while (j >= 0)
-	{
-		rev_str[i] = binary[j];
-		i++;
-		j--;
-	}
-	rev_str[i] = 0;
-	return (rev_str);
-}
-
-static char	*get_binary(char c)
+static void	get_binary(char c, int pid)
 {
 	char	binary[8];
-	int		bin;
 	int		i;
 
-	i = 0;
-	while (i < 8)
+	i = 7;
+	while (i >= 0)
 	{
-		bin = c % 2;
+		binary[i] = (c % 2) + 48;
 		c /= 2;
-		binary[i] = bin + 48;
-		i++;
+		i--;
 	}
-	return (rev_str(binary));
+	i = 0;
+	while (binary[i])
+	{
+		if (binary[i] == '0')
+			kill(pid, SIGUSR1);
+		if (binary[i] == '1')
+			kill(pid, SIGUSR2);
+		i++;
+		usleep(350);
+	}
 }
 
 static void	send_message(char *message, int pid)
 {
 	size_t	i;
-	size_t	j;
-	char	*binary;
 
 	i = 0;
 	while (message[i])
 	{
-		j = 0;
-		binary = get_binary(message[i]);
-		while (binary[j])
-		{
-			if (binary[j] == '0')
-				kill(pid, SIGUSR1);
-			if (binary[j] == '1')
-				kill(pid, SIGUSR2);
-			j++;
-			usleep(100);
-		}
+		get_binary(message[i], pid);
 		i++;
-		free(binary);
 	}
+	get_binary('\0', pid);
 }
 
 int	main(int argc, char **argv)
