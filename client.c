@@ -49,10 +49,23 @@ static void	send_message(char *message, int pid)
 	get_binary('\0', pid);
 }
 
+static void	handler(int signum)
+{
+	if (signum == SIGUSR1)
+	{
+		write(1, "Server busy, please wait\n", 25);
+		exit(1);
+	}
+}
+
 int	main(int argc, char **argv)
 {
-	long	pid;
+	long				pid;
+	struct sigaction	sa;
 
+	sa.sa_flags = 0;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_handler = handler;
 	if (argc != 3)
 	{
 		write(2, "Expected: ./client [PID] \"message\"\n", 35);
@@ -69,5 +82,6 @@ int	main(int argc, char **argv)
 		write(2, "Empty message\n", 14);
 		exit(1);
 	}
+	sigaction(SIGUSR1, &sa, NULL);
 	send_message(argv[2], (int)pid);
 }
