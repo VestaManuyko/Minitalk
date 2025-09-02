@@ -15,4 +15,11 @@
 # include "libft/libft.h"
 # include <signal.h>
 
+typedef struct s_str
+{
+	char	*str;
+	int		i;
+	int		end;
+}	t_str;
+
 #endif
