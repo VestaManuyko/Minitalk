@@ -12,6 +12,8 @@
 
 #include "minitalk.h"
 
+volatile sig_atomic_t	g_action = 1;
+
 static void	get_binary(char c, int pid)
 {
 	char	binary[8];
@@ -25,14 +27,14 @@ static void	get_binary(char c, int pid)
 		i--;
 	}
 	i = 0;
-	while (binary[i])
+	while (i < 8)
 	{
 		if (binary[i] == '0')
 			kill(pid, SIGUSR1);
 		if (binary[i] == '1')
 			kill(pid, SIGUSR2);
 		i++;
-		usleep(350);
+		usleep(400);
 	}
 }
 
@@ -43,7 +45,10 @@ static void	send_message(char *message, int pid)
 	i = 0;
 	while (message[i])
 	{
+		if (!g_action)
+			usleep(400);
 		get_binary(message[i], pid);
+		g_action = 0;
 		i++;
 	}
 	get_binary('\0', pid);
@@ -56,6 +61,8 @@ static void	handler(int signum)
 		write(1, "Server busy, please wait\n", 25);
 		exit(1);
 	}
+	if (signum == SIGUSR2)
+		g_action = 1;
 }
 
 int	main(int argc, char **argv)
@@ -83,5 +90,6 @@ int	main(int argc, char **argv)
 		exit(1);
 	}
 	sigaction(SIGUSR1, &sa, NULL);
+	sigaction(SIGUSR2, &sa, NULL);
 	send_message(argv[2], (int)pid);
 }

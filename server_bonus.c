@@ -12,7 +12,15 @@
 
 #include "minitalk.h"
 
+
 t_str	g_str = {0};
+
+static void	bit_handler(int signum, char *c)
+{
+	*c <<= 1;
+	if (signum == SIGUSR2)
+		*c |= 1;
+}
 
 static void	handler(int signum, siginfo_t *info, void *context)
 {
@@ -27,9 +35,8 @@ static void	handler(int signum, siginfo_t *info, void *context)
 		kill(info->si_pid, SIGUSR1);
 	if (info->si_pid == sender_pid)
 	{
-		c <<= 1;
-		if (signum == SIGUSR2)
-			c |= 1;
+		kill(info->si_pid, SIGUSR2);
+		bit_handler(signum, &c);
 		if (++bits == 8)
 		{
 			g_str.str[g_str.i++] = c;
@@ -45,13 +52,30 @@ static void	handler(int signum, siginfo_t *info, void *context)
 
 static void	str_create(void)
 {
-	g_str.str = ft_calloc(100, 1);
+	char	*temp;
+
 	if (!g_str.str)
 	{
-		write(2, "Malloc failed\n", 14);
+		g_str.str = ft_calloc(100, 1);
+		if (!g_str.str)
+		{
+			write(2, "Malloc failed\n", 14);
+			exit(1);
+		}
+		g_str.cap = 100;
+	}
+	else
+	{
+		temp = g_str.str;
+	g_str.str = ft_realloc(temp, g_str.cap, 100);
+	if (!g_str.str)
+	{
+		free(temp);
+		write(2, "Realloc failed\n", 15);
 		exit(1);
 	}
-	g_str.cap = 100;
+	g_str.cap += 100;
+	}
 }
 
 static void	print_str(void)
@@ -62,22 +86,8 @@ static void	print_str(void)
 		free (g_str.str);
 	g_str.end = 0;
 	g_str.i = 0;
+	g_str.str = NULL;
 	str_create();
-}
-
-static void	new_str(void)
-{
-	char	*temp;
-
-	temp = g_str.str;
-	g_str.str = ft_realloc(temp, g_str.cap, 100);
-	if (!g_str.str)
-	{
-		free(temp);
-		write(2, "Realloc failed\n", 15);
-		exit(1);
-	}
-	g_str.cap += 100;
 }
 
 int	main(void)
@@ -95,7 +105,7 @@ int	main(void)
 	{
 		pause();
 		if (g_str.i == g_str.cap - 1)
-			new_str();
+			str_create();
 		if (g_str.end == 1)
 			print_str();
 	}
