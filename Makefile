@@ -16,7 +16,7 @@ NAME3 = server_bonus
 NAME4 = client_bonus
 LIBFT = libft/libft.a
 CC = cc -Wall -Wextra -Werror -g
-SRC1 = server.c
+SRC1 = server.c ft_realloc.c
 SRC2 = client.c
 OBJ1 = $(SRC1:.c=.o)
 OBJ2 = $(SRC2:.c=.o)

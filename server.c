@@ -51,6 +51,7 @@ static void	str_create(void)
 		write(2, "Malloc failed\n", 14);
 		exit(1);
 	}
+	g_str.cap = 100;
 }
 
 static void	print_str(void)
@@ -67,30 +68,16 @@ static void	print_str(void)
 static void	new_str(void)
 {
 	char	*temp;
-	char	*extra;
-	int		i;
 
-	i = 0;
 	temp = g_str.str;
-	extra = malloc(100);
-	if (!extra)
-	{
-		if (g_str.str)
-			free (g_str.str);
-		g_str.str = NULL;
-		write(2, "Malloc extra failed\n", 14);
-	}
-	while (i < 100)
-		extra[i++] = '1';
-	extra[i] = 0;
-	g_str.str = ft_strjoin(temp, extra);
-	free (temp);
-	free (extra);
+	g_str.str = ft_realloc(temp, g_str.cap, 100);
 	if (!g_str.str)
 	{
-		write(2, "Strjoin failed\n", 15);
+		free(temp);
+		write(2, "Realloc failed\n", 15);
 		exit(1);
 	}
+	g_str.cap += 100;
 }
 
 int	main(void)
@@ -107,7 +94,7 @@ int	main(void)
 	while (1)
 	{
 		pause();
-		if (g_str.i == 99)
+		if (g_str.i == g_str.cap - 1)
 			new_str();
 		if (g_str.end == 1)
 			print_str();
