@@ -20,7 +20,7 @@ SRC1 = server.c ft_realloc.c
 SRC2 = client.c
 OBJ1 = $(SRC1:.c=.o)
 OBJ2 = $(SRC2:.c=.o)
-BSRC1 = server_bonus.c
+BSRC1 = server_bonus.c ft_realloc_bonus.c
 BSRC2 = client_bonus.c
 BOBJ1 = $(BSRC1:.c=.o)
 BOBJ2 = $(BSRC2:.c=.o)

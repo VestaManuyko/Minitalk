@@ -12,7 +12,7 @@
 
 #include "minitalk.h"
 
-t_str g_str = {0};
+t_str	g_str = {0};
 
 static void	handler(int signum, siginfo_t *info, void *context)
 {

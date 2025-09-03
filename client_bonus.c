@@ -10,18 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/libft.h"
-#include <signal.h>
-
-static volatile sig_atomic_t do_action = 0;
+#include "minitalk.h"
 
 static void	get_binary(unsigned char c, int pid)
 {
-	char	binary[9];
+	char	binary[8];
 	int		i;
 
 	i = 7;
-	binary[8] = '\0';
 	while (i >= 0)
 	{
 		binary[i] = (c % 2) + 48;
@@ -29,28 +25,14 @@ static void	get_binary(unsigned char c, int pid)
 		i--;
 	}
 	i = 0;
-	if (binary[i] == '0')
-		kill(pid, SIGUSR1);
-	if (binary[i] == '1')
-		kill(pid, SIGUSR2);
-	ft_printf("%d\n", do_action);
-	i++;
 	while (binary[i])
 	{
-		while (do_action)
-		{
-			if (binary[i] == '0')
-			{
-				do_action = 0;
-				kill(pid, SIGUSR1);
-			}
-			if (binary[i] == '1')
-			{
-				do_action = 0;
-				kill(pid, SIGUSR2);
-			}
-		}
+		if (binary[i] == '0')
+			kill(pid, SIGUSR1);
+		if (binary[i] == '1')
+			kill(pid, SIGUSR2);
 		i++;
+		usleep(350);
 	}
 }
 
@@ -74,8 +56,6 @@ static void	handler(int signum)
 		write(1, "Server busy, please wait\n", 25);
 		exit(1);
 	}
-	if (signum == SIGUSR2)
-		do_action = 1;
 }
 
 int	main(int argc, char **argv)
@@ -103,6 +83,5 @@ int	main(int argc, char **argv)
 		exit(1);
 	}
 	sigaction(SIGUSR1, &sa, NULL);
-	sigaction(SIGUSR2, &sa, NULL);
 	send_message(argv[2], (int)pid);
 }
