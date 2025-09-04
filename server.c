@@ -34,10 +34,10 @@ static void	handler(int signum, siginfo_t *info, void *context)
 		kill(info->si_pid, SIGUSR1);
 	if (info->si_pid == sender_pid)
 	{
+		kill(info->si_pid, SIGUSR2);
 		bit_handler(signum, &c);
 		if (++bits == 8)
 		{
-			kill(info->si_pid, SIGUSR2);
 			g_str.str[g_str.i++] = c;
 			if (c == '\0')
 				sender_pid = 0;
@@ -66,14 +66,14 @@ static void	str_create(void)
 	else
 	{
 		temp = g_str.str;
-	g_str.str = ft_realloc(temp, g_str.cap, 100);
-	if (!g_str.str)
-	{
-		free(temp);
-		write(2, "Realloc failed\n", 15);
-		exit(1);
-	}
-	g_str.cap += 100;
+		g_str.str = ft_realloc(temp, g_str.cap, 100);
+		if (!g_str.str)
+		{
+			free(temp);
+			write(2, "Realloc failed\n", 15);
+			exit(1);
+		}
+		g_str.cap += 100;
 	}
 }
 

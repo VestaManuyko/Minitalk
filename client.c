@@ -29,12 +29,14 @@ static void	get_binary(char c, int pid)
 	i = 0;
 	while (i < 8)
 	{
+		g_action = 0;
 		if (binary[i] == '0')
 			kill(pid, SIGUSR1);
 		if (binary[i] == '1')
 			kill(pid, SIGUSR2);
 		i++;
-		usleep(400);
+		while (!g_action)
+			pause();
 	}
 }
 
@@ -45,10 +47,7 @@ static void	send_message(char *message, int pid)
 	i = 0;
 	while (message[i])
 	{
-		if (!g_action)
-			usleep(400);
 		get_binary(message[i], pid);
-		g_action = 0;
 		i++;
 	}
 	get_binary('\0', pid);

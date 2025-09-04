@@ -12,7 +12,6 @@
 
 #include "minitalk.h"
 
-
 volatile sig_atomic_t	g_action = 1;
 
 static void	get_binary(unsigned char c, int pid)
@@ -30,15 +29,14 @@ static void	get_binary(unsigned char c, int pid)
 	i = 0;
 	while (i < 8)
 	{
-		if (!g_action)
-			usleep(400);
+		g_action = 0;
 		if (binary[i] == '0')
 			kill(pid, SIGUSR1);
 		if (binary[i] == '1')
 			kill(pid, SIGUSR2);
 		i++;
-		usleep(400);
-		g_action = 0;
+		while (!g_action)
+			pause();
 	}
 }
 

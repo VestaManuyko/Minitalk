@@ -12,7 +12,6 @@
 
 #include "minitalk.h"
 
-
 t_str	g_str = {0};
 
 static void	bit_handler(int signum, char *c)
@@ -67,14 +66,14 @@ static void	str_create(void)
 	else
 	{
 		temp = g_str.str;
-	g_str.str = ft_realloc(temp, g_str.cap, 100);
-	if (!g_str.str)
-	{
-		free(temp);
-		write(2, "Realloc failed\n", 15);
-		exit(1);
-	}
-	g_str.cap += 100;
+		g_str.str = ft_realloc(temp, g_str.cap, 100);
+		if (!g_str.str)
+		{
+			free(temp);
+			write(2, "Realloc failed\n", 15);
+			exit(1);
+		}
+		g_str.cap += 100;
 	}
 }
 
