@@ -47,6 +47,11 @@ static void	send_message(char *message, int pid)
 	i = 0;
 	while (message[i])
 	{
+		if (!ft_isprint(message[i]))
+		{
+			write(2, "Check for bonus, to write unicode characters\n", 45);
+			exit(1);
+		}
 		get_binary(message[i], pid);
 		i++;
 	}
