@@ -83,9 +83,9 @@ int	main(int argc, char **argv)
 		exit(1);
 	}
 	pid = ft_atoi(argv[1]);
-	if (pid == ATOI_ERROR || (kill((int)pid, 0) == -1))
+	if (pid <= 1 || pid == ATOI_ERROR || (kill((int)pid, 0) == -1))
 	{
-		write(2, "Incorrect PID\n", 14);
+		write(2, "Incorrect PID for client\n", 25);
 		exit(1);
 	}
 	if (!argv[2][0])
