@@ -34,7 +34,6 @@ static void	handler(int signum, siginfo_t *info, void *context)
 		kill(info->si_pid, SIGUSR1);
 	if (info->si_pid == sender_pid)
 	{
-		kill(info->si_pid, SIGUSR2);
 		bit_handler(signum, &c);
 		if (++bits == 8)
 		{
@@ -47,6 +46,7 @@ static void	handler(int signum, siginfo_t *info, void *context)
 			bits = 0;
 		}
 	}
+	kill(info->si_pid, SIGUSR2);
 }
 
 static void	str_create(void)

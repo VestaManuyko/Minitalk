@@ -14,7 +14,7 @@
 
 volatile sig_atomic_t	g_action = 1;
 
-static void	get_binary(char c, int pid)
+static void	get_binary(unsigned char c, int pid)
 {
 	char	binary[8];
 	int		i;
@@ -47,12 +47,7 @@ static void	send_message(char *message, int pid)
 	i = 0;
 	while (message[i])
 	{
-		if (!ft_isprint(message[i]))
-		{
-			write(2, "Check for bonus, to write unicode characters\n", 45);
-			exit(1);
-		}
-		get_binary(message[i], pid);
+		get_binary((unsigned char)message[i], pid);
 		i++;
 	}
 	get_binary('\0', pid);
