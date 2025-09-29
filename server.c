@@ -53,27 +53,27 @@ static void	str_create(void)
 {
 	char	*temp;
 
-	if (!g_str.str)
-	{
-		g_str.str = ft_calloc(100, 1);
-		if (!g_str.str)
-		{
-			write(2, "Malloc failed\n", 14);
-			exit(1);
-		}
-		g_str.cap = 100;
-	}
-	else
+	if (g_str.str)
 	{
 		temp = g_str.str;
-		g_str.str = ft_realloc(temp, g_str.cap, 100);
+		g_str.str = ft_realloc(temp, g_str.cap, CHUNK);
 		if (!g_str.str)
 		{
 			free(temp);
 			write(2, "Realloc failed\n", 15);
 			exit(1);
 		}
-		g_str.cap += 100;
+		g_str.cap += CHUNK;
+	}
+	else
+	{
+		g_str.str = ft_calloc(CHUNK, 1);
+		if (!g_str.str)
+		{
+			write(2, "Malloc failed\n", 14);
+			exit(1);
+		}
+		g_str.cap = CHUNK;
 	}
 }
 
@@ -102,11 +102,11 @@ int	main(void)
 	sigaction(SIGUSR2, &sa, NULL);
 	while (1)
 	{
-		pause();
 		if (g_str.i == g_str.cap - 1)
 			str_create();
 		if (g_str.end == 1)
 			print_str();
+		pause();
 	}
 	if (g_str.str)
 		free (g_str.str);

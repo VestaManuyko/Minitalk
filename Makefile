@@ -15,6 +15,7 @@ NAME2 = client
 NAME3 = server_bonus
 NAME4 = client_bonus
 LIBFT = libft/libft.a
+HEAD = minitalk.h
 CC = cc -Wall -Wextra -Werror -g
 SRC1 = server.c ft_realloc.c
 SRC2 = client.c
@@ -27,11 +28,11 @@ BOBJ2 = $(BSRC2:.c=.o)
 
 all : $(NAME1) $(NAME2)
 
-$(NAME1) : $(LIBFT) $(OBJ1)
+$(NAME1) : $(LIBFT) $(OBJ1) $(HEAD)
 	@$(CC) $(OBJ1) $(LIBFT) -o $(NAME1)
 	@echo "Server made."
 
-$(NAME2) : $(LIBFT) $(OBJ2)
+$(NAME2) : $(LIBFT) $(OBJ2) $(HEAD)
 	@$(CC) $(OBJ2) $(LIBFT) -o $(NAME2)
 	@echo "Client made."
 
@@ -54,11 +55,11 @@ re : fclean $(NAME1) $(NAME2)
 
 bonus : $(NAME3) $(NAME4)
 
-$(NAME3) : $(LIBFT) $(BOBJ1)
+$(NAME3) : $(LIBFT) $(BOBJ1) $(HEAD)
 	@$(CC) $(BOBJ1) $(LIBFT) -o $(NAME3)
 	@echo "Server_bonus done."
 
-$(NAME4) : $(LIBFT) $(BOBJ2)
+$(NAME4) : $(LIBFT) $(BOBJ2) $(HEAD)
 	@$(CC) $(BOBJ2) $(LIBFT) -o $(NAME4)
 	@echo "Client_bonus done."
 

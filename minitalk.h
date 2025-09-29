@@ -15,6 +15,8 @@
 # include "libft/libft.h"
 # include <signal.h>
 
+# define CHUNK 131100
+
 typedef struct s_str
 {
 	char	*str;
