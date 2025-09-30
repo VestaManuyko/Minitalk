@@ -45,35 +45,17 @@ static void	handler(int signum, siginfo_t *info, void *context)
 			c = 0;
 			bits = 0;
 		}
+		kill(info->si_pid, SIGUSR2);
 	}
-	kill(info->si_pid, SIGUSR2);
 }
 
 static void	str_create(void)
 {
-	char	*temp;
-
-	if (g_str.str)
+	g_str.str = ft_calloc(CHUNK, 1);
+	if (!g_str.str)
 	{
-		temp = g_str.str;
-		g_str.str = ft_realloc(temp, g_str.cap, CHUNK);
-		if (!g_str.str)
-		{
-			free(temp);
-			write(2, "Realloc failed\n", 15);
-			exit(1);
-		}
-		g_str.cap += CHUNK;
-	}
-	else
-	{
-		g_str.str = ft_calloc(CHUNK, 1);
-		if (!g_str.str)
-		{
-			write(2, "Malloc failed\n", 14);
-			exit(1);
-		}
-		g_str.cap = 100;
+		write(2, "Malloc failed\n", 14);
+		exit(1);
 	}
 }
 
@@ -81,11 +63,10 @@ static void	print_str(void)
 {
 	write(1, g_str.str, ft_strlen(g_str.str));
 	write(1, "\n", 1);
-	if (g_str.str)
-		free (g_str.str);
+	free (g_str.str);
+	g_str.str = NULL;
 	g_str.end = 0;
 	g_str.i = 0;
-	g_str.str = NULL;
 	str_create();
 }
 
@@ -102,14 +83,8 @@ int	main(void)
 	sigaction(SIGUSR2, &sa, NULL);
 	while (1)
 	{
-		if (g_str.i == g_str.cap - 1)
-			str_create();
 		if (g_str.end == 1)
 			print_str();
 		pause();
 	}
-	if (g_str.str)
-		free (g_str.str);
-	g_str.str = NULL;
-	exit (0);
 }
