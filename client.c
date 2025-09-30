@@ -12,14 +12,22 @@
 
 #include "minitalk.h"
 
-volatile sig_atomic_t	g_action = 1;
+volatile sig_atomic_t	g_action;
+
+static void	end_message(unsigned char c)
+{
+	if (c == '\0')
+		write(1, "Message sent\n", 13);
+}
 
 static void	get_binary(unsigned char c, int pid)
 {
 	char	binary[8];
 	int		i;
+	char	letter;
 
 	i = 7;
+	letter = c;
 	while (i >= 0)
 	{
 		binary[i] = (c % 2) + 48;
@@ -38,6 +46,7 @@ static void	get_binary(unsigned char c, int pid)
 		while (!g_action)
 			pause();
 	}
+	end_message(letter);
 }
 
 static void	send_message(char *message, int pid)

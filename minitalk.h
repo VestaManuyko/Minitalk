@@ -15,16 +15,13 @@
 # include "libft/libft.h"
 # include <signal.h>
 
-# define CHUNK 131100
+# define CHUNK 131080
 
 typedef struct s_str
 {
-	char	*str;
-	int		i;
-	int		end;
-	int		cap;
+	char					*str;
+	int						i;
+	volatile sig_atomic_t	end;
 }	t_str;
-
-void	*ft_realloc(void *ptr, size_t size, size_t extra_size);
 
 #endif
